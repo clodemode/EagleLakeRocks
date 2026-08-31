@@ -13,6 +13,15 @@ import (
 )
 
 var tmplFuncs = template.FuncMap{
+	// coord formats a nullable coordinate. Needed because {{printf "%.5f" .}}
+	// receives the *float64 itself — unlike {{.}}, printf's arguments are not
+	// indirected, so a pointer renders as %!f(float64=0xc000...).
+	"coord": func(p *float64) string {
+		if p == nil {
+			return ""
+		}
+		return strconv.FormatFloat(*p, 'f', 5, 64)
+	},
 	"json": func(v any) template.JS {
 		b, err := json.Marshal(v)
 		if err != nil {

@@ -12,7 +12,7 @@
 <dl class="facts">
   <dt>Marker</dt><dd>{{.Rock.MarkerID}}</dd>
   <dt>Name</dt><dd>{{if .Rock.LocalName}}{{.Rock.LocalName}}{{else}}{{.Rock.Nickname}}{{end}}</dd>
-  <dt>Position</dt><dd>{{with .Rock.Latitude}}{{printf "%.5f" .}}{{end}}, {{with .Rock.Longitude}}{{printf "%.5f" .}}{{end}}</dd>
+  <dt>Position</dt><dd>{{coord .Rock.Latitude}}, {{coord .Rock.Longitude}}</dd>
   {{with .Rock.SizeM}}<dt>Radius</dt><dd>{{.}} m</dd>{{end}}
   {{with .Rock.DepthFt}}<dt>Depth</dt><dd>{{.}} ft</dd>{{end}}
   <dt>Status</dt><dd><span class="pill pill-{{.Rock.Status}}">{{.Rock.Status}}</span></dd>

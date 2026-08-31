@@ -22,8 +22,8 @@
       <tr data-id="{{.ID}}" data-marker="{{.MarkerID}}">
         <td><a href="{{.URL}}">{{.MarkerID}}</a></td>
         <td>{{if .LocalName}}{{.LocalName}}{{else}}{{.Nickname}}{{end}}</td>
-        <td>{{with .Latitude}}{{printf "%.5f" .}}{{end}}</td>
-        <td>{{with .Longitude}}{{printf "%.5f" .}}{{end}}</td>
+        <td>{{coord .Latitude}}</td>
+        <td>{{coord .Longitude}}</td>
         <td>{{with .SizeM}}{{.}}{{end}}</td>
         <td>{{with .DepthFt}}{{.}}{{end}}</td>
         <td><span class="pill pill-{{.Status}}">{{.Status}}</span></td>
