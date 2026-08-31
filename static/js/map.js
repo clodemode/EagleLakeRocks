@@ -21,8 +21,15 @@
   );
 
   var map = L.map('map', {
-    minZoom: 9, maxZoom: 19,
-    maxBounds: bounds.pad(0.25), maxBoundsViscosity: 0.9
+    maxZoom: 19,
+    // Hard-clamp panning to the lake. Viscosity 1.0 means the edge does not
+    // rubber-band at all — you simply cannot drag off Eagle Lake.
+    maxBounds: bounds.pad(0.05),
+    maxBoundsViscosity: 1.0,
+    // No wheel zoom. Scrolling the PAGE with the pointer over the map was
+    // zooming the map instead, which is hostile on a trackpad. Zoom is the
+    // +/- control, double-click, or pinch on touch.
+    scrollWheelZoom: false
   }).fitBounds(bounds, { padding: [30, 30] });
 
   el._leafletMap = map;   // handle for debugging; harmless
@@ -111,15 +118,28 @@
     el.addEventListener(ev, function () { userMoved = true; }, { passive: true });
   });
 
+  /* Floor the zoom at whatever currently fits the lake, so you can never zoom
+     out past the boundary into empty Ontario. It has to be recomputed on every
+     resize: the zoom that fits the lake in a phone-width container is not the
+     zoom that fits it on a desktop. */
+  function clampMinZoom() {
+    map.setMinZoom(0);                                   // lift, or the probe is floored by the old value
+    var fit = map.getBoundsZoom(bounds, false, L.point(30, 30));
+    map.setMinZoom(fit);
+    return fit;
+  }
+
   function refit() {
     map.invalidateSize();
+    var fit = clampMinZoom();
     if (userMoved) return;
     if (el.dataset.focus === '1' && rocks.length === 1 && rocks[0].latitude != null) {
-      map.setView([rocks[0].latitude, rocks[0].longitude], 16);
+      map.setView([rocks[0].latitude, rocks[0].longitude], Math.max(fit, 16));
     } else {
       map.fitBounds(bounds, { padding: [30, 30] });
     }
   }
+  clampMinZoom();
 
   if (window.ResizeObserver) {
     new ResizeObserver(refit).observe(el);
