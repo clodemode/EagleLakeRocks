@@ -14,15 +14,47 @@ main { max-width: 1100px; margin: 0 auto; padding: 0 1rem 3rem; }
 a { color: var(--accent); }
 .muted { color: var(--muted); } .small { font-size: .85rem; }
 
-.topbar { display:flex; align-items:center; justify-content:space-between; gap:1rem;
-  padding:.7rem 1rem; background:var(--card); border-bottom:1px solid var(--line);
-  max-width:1100px; margin:0 auto; flex-wrap:wrap; }
-.brand { display:flex; align-items:center; gap:.5rem; font-weight:650;
-  color:var(--fg); text-decoration:none; }
-.topbar nav { display:flex; align-items:center; gap:1rem; font-size:.92rem; }
-.inline { display:inline; }
-.linkish { background:none; border:0; color:var(--accent); cursor:pointer;
-  font:inherit; font-size:.92rem; padding:0; }
+/* --- masthead: Perch, the wordmark, and the CLODE mark ------------------ */
+.masthead { background:linear-gradient(135deg,#123a5e 0%,#1c5c8a 55%,#2b7fb0 100%);
+  color:#f2f6fa; border-bottom:3px solid #0d2a45; }
+.mast-inner { max-width:1100px; margin:0 auto; padding:.85rem 1rem;
+  display:flex; align-items:center; justify-content:space-between; gap:1.2rem;
+  flex-wrap:wrap; }
+
+.mast-brand { display:flex; align-items:center; gap:.85rem;
+  color:inherit; text-decoration:none; min-width:0; }
+/* Pale-blue disc, not white: Perch's head is white and disappeared against a
+   white halo. The tint gives her something to read against. */
+.mast-perch { flex:0 0 auto; width:64px; height:64px; border-radius:50%;
+  background:radial-gradient(circle at 50% 46%, #e3eef8 0%, #bcd6ea 60%,
+             rgba(188,214,234,.35) 72%, rgba(188,214,234,0) 78%);
+  filter:drop-shadow(0 2px 3px rgba(0,0,0,.28)); }
+.mast-words { display:flex; flex-direction:column; gap:.15rem; min-width:0; }
+.mast-title { font-size:1.45rem; font-weight:700; letter-spacing:-.02em; line-height:1.1; }
+.mast-tag { font-size:.86rem; color:#bcd8ee; }
+.mast-tag b { color:#ffffff; font-weight:650; }
+
+.mast-nav { display:flex; align-items:center; gap:1.1rem; flex-wrap:wrap; }
+.mast-links { display:flex; align-items:center; gap:1rem; font-size:.92rem; }
+.mast-links a, .mast-links .linkish { color:#dceaf6; text-decoration:none; }
+.mast-links a:hover, .mast-links .linkish:hover { color:#fff; text-decoration:underline; }
+
+.clode-badge { display:flex; flex-direction:column; align-items:center;
+  gap:.05rem; padding:.4rem .85rem; border:1.5px solid rgba(255,255,255,.45);
+  border-radius:9px; text-decoration:none; color:#fff; line-height:1.1;
+  background:rgba(255,255,255,.07); transition:background .15s, border-color .15s; }
+.clode-badge:hover { background:rgba(255,255,255,.18); border-color:#fff; }
+.cb-kicker { font-size:.62rem; text-transform:uppercase; letter-spacing:.13em;
+  color:#bcd8ee; }
+.cb-name { font-size:1.02rem; font-weight:800; letter-spacing:.06em; }
+
+@media (max-width:640px) {
+  .mast-inner { padding:.7rem .8rem; gap:.7rem; }
+  .mast-perch { width:52px; height:52px; }
+  .mast-title { font-size:1.2rem; }
+  .mast-tag { font-size:.78rem; }
+  .mast-nav { width:100%; justify-content:space-between; }
+}
 
 .page-head { padding: 1.4rem 0 .8rem; }
 .page-head h1 { margin:0 0 .2rem; font-size:1.6rem; letter-spacing:-.01em; }
@@ -97,15 +129,3 @@ footer p { margin:.3rem 0; }
   td:nth-child(5),th:nth-child(5),td:nth-child(6),th:nth-child(6) { display:none; }
 }
 
-/* --- colophon: Perch + the CLODE mark ---------------------------------- */
-.colophon { display:flex; align-items:center; gap:.9rem; margin-top:1.1rem;
-  padding-top:1rem; border-top:1px solid var(--line); }
-.colophon .perch { flex:0 0 auto; width:56px; height:56px; }
-.colophon p { margin:.1rem 0; }
-.colophon .built { font-size:.95rem; font-weight:650; color:var(--fg);
-  letter-spacing:.01em; }
-.colophon .built a { text-decoration:none; }
-.colophon .built a:hover { text-decoration:underline; }
-.colophon .perch-line { font-size:.85rem; }
-.colophon .perch-line em { color:var(--muted); }
-@media (max-width:520px) { .colophon { flex-direction:column; align-items:flex-start; } }

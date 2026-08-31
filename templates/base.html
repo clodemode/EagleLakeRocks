@@ -14,18 +14,35 @@
 <script defer src="/static/vendor/leaflet.js?v={{.V}}"></script>
 </head>
 <body>
-<header class="topbar">
-  <a class="brand" href="/"><img src="/static/img/rock.svg?v={{.V}}" alt="" width="26" height="26"><span>Eagle Lake Rocks</span></a>
-  <nav>
-    <a href="/api/eaglelake/rocks.geojson">GeoJSON</a>
-    <a href="/api/eaglelake/rocks.csv">CSV</a>
-    {{if .Authed}}
-      <form method="post" action="/logout" class="inline"><button class="linkish">Sign out</button></form>
-    {{else}}
-      <a href="/login">Sign in</a>
-    {{end}}
-  </nav>
+<header class="masthead">
+  <div class="mast-inner">
+    <a class="mast-brand" href="/">
+      <img class="mast-perch" src="/static/img/perch.svg?v={{.V}}" width="64" height="64"
+           alt="Perch, a bald eagle perched on a rock above the waterline">
+      <span class="mast-words">
+        <span class="mast-title">Eagle Lake Rocks</span>
+        <span class="mast-tag"><b>Perch</b> sees the rock before the hull does.</span>
+      </span>
+    </a>
+    <nav class="mast-nav">
+      <span class="mast-links">
+        <a href="/api/eaglelake/rocks.geojson">GeoJSON</a>
+        <a href="/api/eaglelake/rocks.csv">CSV</a>
+        {{if .Authed}}
+          <form method="post" action="/logout" class="inline"><button class="linkish">Sign out</button></form>
+        {{else}}
+          <a href="/login">Sign in</a>
+        {{end}}
+      </span>
+      <a class="clode-badge" href="https://github.com/clodemode"
+         title="CLODE — github.com/clodemode">
+        <span class="cb-kicker">Built with</span>
+        <span class="cb-name">CLODE</span>
+      </a>
+    </nav>
+  </div>
 </header>
+
 <main>
 {{end}}
 
@@ -37,17 +54,8 @@
   <p>Maintained by the <abbr title="Eagle Lake Property Owners Association">ELPOA</abbr>.
      Dataset released under CC&nbsp;BY&nbsp;4.0.</p>
 
-  <div class="colophon">
-    <img class="perch" src="/static/img/perch.svg?v={{.V}}" width="56" height="56"
-         alt="Perch, a bald eagle perched on a rock above the waterline">
-    <div>
-      <p class="built">Built with <a href="https://github.com/clodemode">CLODE</a></p>
-      <p class="perch-line"><strong>Perch</strong> keeps this map &mdash;
-         <em>sees the rock before the hull does.</em></p>
-      <p class="small"><a href="https://github.com/clodemode/EagleLakeRocks">Source</a>
-         &middot; <a href="https://github.com/clodemode">github.com/clodemode</a></p>
-    </div>
-  </div>
+  <p class="small"><a href="https://github.com/clodemode/EagleLakeRocks">Source</a>
+     &middot; Built with <a href="https://github.com/clodemode">CLODE</a></p>
 </footer>
 </body>
 </html>
