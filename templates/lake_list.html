@@ -1,0 +1,6 @@
+{{template "head" .}}
+<section class="page-head"><h1>Lakes</h1></section>
+<ul class="lakes">
+  {{range .Lakes}}<li><a href="/{{.Slug}}/">{{.Name}}</a></li>{{end}}
+</ul>
+{{template "foot" .}}

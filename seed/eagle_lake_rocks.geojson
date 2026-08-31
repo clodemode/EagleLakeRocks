@@ -1,0 +1,403 @@
+{
+  "type": "FeatureCollection",
+  "properties": {
+    "name": "Eagle Lake rock hazards",
+    "lake": "Eagle Lake",
+    "region": "Frontenac County, Ontario, Canada",
+    "steward": "Eagle Lake Property Owners Association (ELPOA)",
+    "bbox": {
+      "min_lat": 44.6584,
+      "max_lat": 44.70405,
+      "min_lng": -76.73573,
+      "max_lng": -76.66912
+    },
+    "generated": "2026-08-31",
+    "sources": [
+      "ELPOA production DB snapshot 2025-11-26 (13 records, authoritative)",
+      "Django dumpdata 2025-04-05 (sole surviving source of depth_ft)",
+      "Kris Thompson field survey 2026-08-31 (local names; 5 rocks new since the DB)"
+    ],
+    "warning": "These points mark BOAT HAZARDS. Positions are as-recorded by ELPOA volunteers, not a hydrographic survey. Do not navigate by them.",
+    "note": "Dedication/sponsor names are deliberately omitted from this public dataset."
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.71508,
+          44.67612
+        ]
+      },
+      "properties": {
+        "marker_id": "C1",
+        "nickname": "C1",
+        "local_name": null,
+        "former_name": null,
+        "status": "marked",
+        "size_m": null,
+        "depth_ft": null,
+        "source": "ELPOA production database (rocks.opeongo.net), snapshot 2025-11-26",
+        "accuracy": "as-recorded"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.70535,
+          44.67318
+        ]
+      },
+      "properties": {
+        "marker_id": "C2",
+        "nickname": "C2",
+        "local_name": null,
+        "former_name": null,
+        "status": "marked",
+        "size_m": null,
+        "depth_ft": null,
+        "source": "ELPOA production database (rocks.opeongo.net), snapshot 2025-11-26",
+        "accuracy": "as-recorded"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.7047,
+          44.67264
+        ]
+      },
+      "properties": {
+        "marker_id": "C3",
+        "nickname": "C3",
+        "local_name": null,
+        "former_name": null,
+        "status": "marked",
+        "size_m": null,
+        "depth_ft": null,
+        "source": "ELPOA production database (rocks.opeongo.net), snapshot 2025-11-26",
+        "accuracy": "as-recorded"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.68964,
+          44.69377
+        ]
+      },
+      "properties": {
+        "marker_id": "NE1",
+        "nickname": "NE1",
+        "local_name": null,
+        "former_name": null,
+        "status": "marked",
+        "size_m": null,
+        "depth_ft": null,
+        "source": "ELPOA production database (rocks.opeongo.net), snapshot 2025-11-26",
+        "accuracy": "as-recorded"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.68886,
+          44.69333
+        ]
+      },
+      "properties": {
+        "marker_id": "NE2",
+        "nickname": "NE2",
+        "local_name": null,
+        "former_name": null,
+        "status": "marked",
+        "size_m": null,
+        "depth_ft": null,
+        "source": "ELPOA production database (rocks.opeongo.net), snapshot 2025-11-26",
+        "accuracy": "as-recorded"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.6837,
+          44.68842
+        ]
+      },
+      "properties": {
+        "marker_id": "NE3",
+        "nickname": "NE3",
+        "local_name": null,
+        "former_name": null,
+        "status": "marked",
+        "size_m": null,
+        "depth_ft": null,
+        "source": "ELPOA production database (rocks.opeongo.net), snapshot 2025-11-26",
+        "accuracy": "as-recorded"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.69,
+          44.68808
+        ]
+      },
+      "properties": {
+        "marker_id": "NE4",
+        "nickname": "NE4",
+        "local_name": "Marker N4",
+        "former_name": "Schock Rock",
+        "status": "marked",
+        "size_m": 30,
+        "depth_ft": 0.5,
+        "source": "ELPOA production database (rocks.opeongo.net), snapshot 2025-11-26; depth from 2025-04-05 dumpdata (column later dropped); local name from Kris field survey 2026-08-31 (agrees to 0 m)",
+        "accuracy": "as-recorded"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.69324,
+          44.68984
+        ]
+      },
+      "properties": {
+        "marker_id": "NE5",
+        "nickname": "NE5",
+        "local_name": "Bridgens N5",
+        "former_name": null,
+        "status": "marked",
+        "size_m": 3,
+        "depth_ft": 0.5,
+        "source": "ELPOA production database (rocks.opeongo.net), snapshot 2025-11-26; depth from 2025-04-05 dumpdata (column later dropped); local name from Kris field survey 2026-08-31 (agrees to 0 m)",
+        "accuracy": "as-recorded"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.71339,
+          44.69366
+        ]
+      },
+      "properties": {
+        "marker_id": "NW1",
+        "nickname": "NW1",
+        "local_name": "Target",
+        "former_name": null,
+        "status": "marked",
+        "size_m": null,
+        "depth_ft": 0.5,
+        "source": "ELPOA production database (rocks.opeongo.net), snapshot 2025-11-26; depth from 2025-04-05 dumpdata (column later dropped); local name from Kris field survey 2026-08-31 (agrees to 0 m)",
+        "accuracy": "as-recorded"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.70802,
+          44.69142
+        ]
+      },
+      "properties": {
+        "marker_id": "NW2",
+        "nickname": "NW2",
+        "local_name": "Pigs rock",
+        "former_name": null,
+        "status": "marked",
+        "size_m": 10,
+        "depth_ft": 0.5,
+        "source": "ELPOA production database (rocks.opeongo.net), snapshot 2025-11-26; depth from 2025-04-05 dumpdata (column later dropped); local name from Kris field survey 2026-08-31 (agrees to 0 m)",
+        "accuracy": "as-recorded"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.70476,
+          44.66676
+        ]
+      },
+      "properties": {
+        "marker_id": "S1",
+        "nickname": "S1",
+        "local_name": null,
+        "former_name": "Dardick Rock",
+        "status": "marked",
+        "size_m": null,
+        "depth_ft": null,
+        "source": "ELPOA production database (rocks.opeongo.net), snapshot 2025-11-26",
+        "accuracy": "as-recorded"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.68338,
+          44.6698
+        ]
+      },
+      "properties": {
+        "marker_id": "S2",
+        "nickname": "S2",
+        "local_name": null,
+        "former_name": null,
+        "status": "marked",
+        "size_m": null,
+        "depth_ft": null,
+        "source": "ELPOA production database (rocks.opeongo.net), snapshot 2025-11-26",
+        "accuracy": "as-recorded"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.68346,
+          44.66953
+        ]
+      },
+      "properties": {
+        "marker_id": "S3",
+        "nickname": "S3",
+        "local_name": null,
+        "former_name": null,
+        "status": "marked",
+        "size_m": null,
+        "depth_ft": null,
+        "source": "ELPOA production database (rocks.opeongo.net), snapshot 2025-11-26",
+        "accuracy": "as-recorded"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.68958,
+          44.6883
+        ]
+      },
+      "properties": {
+        "marker_id": "North jug",
+        "nickname": null,
+        "local_name": "North jug",
+        "former_name": null,
+        "status": "unverified",
+        "size_m": null,
+        "depth_ft": null,
+        "source": "Kris field survey 2026-08-31; NOT in the production database (nearest known marker NE4, 41 m)",
+        "accuracy": "as-reported"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.70207,
+          44.68219
+        ]
+      },
+      "properties": {
+        "marker_id": "East dock",
+        "nickname": null,
+        "local_name": "East dock",
+        "former_name": null,
+        "status": "unverified",
+        "size_m": null,
+        "depth_ft": null,
+        "source": "Kris field survey 2026-08-31; NOT in the production database (nearest known marker C2, 1036 m)",
+        "accuracy": "as-reported"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.71192,
+          44.68675
+        ]
+      },
+      "properties": {
+        "marker_id": "West",
+        "nickname": null,
+        "local_name": "West",
+        "former_name": null,
+        "status": "unverified",
+        "size_m": null,
+        "depth_ft": null,
+        "source": "Kris field survey 2026-08-31; NOT in the production database (nearest known marker NW2, 605 m)",
+        "accuracy": "as-reported"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.71093,
+          44.68627
+        ]
+      },
+      "properties": {
+        "marker_id": "Dylan Rock",
+        "nickname": null,
+        "local_name": "Dylan Rock",
+        "former_name": null,
+        "status": "unverified",
+        "size_m": null,
+        "depth_ft": 1.5,
+        "source": "Kris field survey 2026-08-31; NOT in the production database (nearest known marker NW2, 618 m)",
+        "accuracy": "as-reported"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.71064,
+          44.68643
+        ]
+      },
+      "properties": {
+        "marker_id": "He?",
+        "nickname": null,
+        "local_name": "\"He\" [name truncated in source]",
+        "former_name": null,
+        "status": "unverified",
+        "size_m": null,
+        "depth_ft": null,
+        "source": "Kris field survey 2026-08-31; NOT in the production database (nearest known marker NW2, 593 m)",
+        "accuracy": "as-reported"
+      }
+    }
+  ]
+}

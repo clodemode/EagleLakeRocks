@@ -1,0 +1,12 @@
+{{template "head" .}}
+<section class="card narrow">
+  <h1>Sign in</h1>
+  <p class="muted">Editing is for ELPOA volunteers. The map and dataset are public.</p>
+  {{with .Error}}<p class="error">{{.}}</p>{{end}}
+  <form method="post" action="/login">
+    <input type="hidden" name="next" value="{{.Next}}">
+    <label>Password<input name="password" type="password" required autofocus></label>
+    <button type="submit">Sign in</button>
+  </form>
+</section>
+{{template "foot" .}}

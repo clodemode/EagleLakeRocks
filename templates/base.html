@@ -1,0 +1,42 @@
+{{define "head"}}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{.Title}} — Eagle Lake Rocks</title>
+<meta name="description" content="Marked navigation hazards on Eagle Lake, Frontenac County, Ontario. Maintained by the Eagle Lake Property Owners Association.">
+<link rel="icon" href="/static/img/rock.svg?v={{.V}}">
+<!-- Stylesheets BEFORE scripts: a deferred script executes while a
+     stylesheet declared after it is still pending, and #map would then
+     have zero height when Leaflet measures it -> fitBounds lands on maxZoom. -->
+<link rel="stylesheet" href="/static/vendor/leaflet.css?v={{.V}}">
+<link rel="stylesheet" href="/static/css/app.css?v={{.V}}">
+<script defer src="/static/vendor/leaflet.js?v={{.V}}"></script>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="/"><img src="/static/img/rock.svg?v={{.V}}" alt="" width="26" height="26"><span>Eagle Lake Rocks</span></a>
+  <nav>
+    <a href="/api/eaglelake/rocks.geojson">GeoJSON</a>
+    <a href="/api/eaglelake/rocks.csv">CSV</a>
+    {{if .Authed}}
+      <form method="post" action="/logout" class="inline"><button class="linkish">Sign out</button></form>
+    {{else}}
+      <a href="/login">Sign in</a>
+    {{end}}
+  </nav>
+</header>
+<main>
+{{end}}
+
+{{define "foot"}}
+</main>
+<footer>
+  <p><strong>These points mark boat hazards.</strong> Positions are as recorded by ELPOA
+     volunteers, not a hydrographic survey. Do not navigate by them.</p>
+  <p>Maintained by the <abbr title="Eagle Lake Property Owners Association">ELPOA</abbr>.
+     Dataset released under CC&nbsp;BY&nbsp;4.0.</p>
+</footer>
+</body>
+</html>
+{{end}}

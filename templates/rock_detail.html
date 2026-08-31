@@ -1,0 +1,47 @@
+{{template "head" .}}
+<section class="page-head">
+  <p class="crumb"><a href="/{{.Lake.Slug}}/">&larr; {{.Lake.Name}}</a></p>
+  <h1>{{.Rock.MarkerID}}{{if .Rock.LocalName}} — {{.Rock.LocalName}}{{end}}</h1>
+</section>
+
+<div id="map" class="map-small"
+     data-min-lat="{{.Lake.MinLat}}" data-max-lat="{{.Lake.MaxLat}}"
+     data-min-lng="{{.Lake.MinLng}}" data-max-lng="{{.Lake.MaxLng}}"
+     data-lake-slug="{{.Lake.Slug}}" data-focus="1" data-editable="0"></div>
+
+<dl class="facts">
+  <dt>Marker</dt><dd>{{.Rock.MarkerID}}</dd>
+  <dt>Name</dt><dd>{{if .Rock.LocalName}}{{.Rock.LocalName}}{{else}}{{.Rock.Nickname}}{{end}}</dd>
+  <dt>Position</dt><dd>{{with .Rock.Latitude}}{{printf "%.5f" .}}{{end}}, {{with .Rock.Longitude}}{{printf "%.5f" .}}{{end}}</dd>
+  {{with .Rock.SizeM}}<dt>Radius</dt><dd>{{.}} m</dd>{{end}}
+  {{with .Rock.DepthFt}}<dt>Depth</dt><dd>{{.}} ft</dd>{{end}}
+  <dt>Status</dt><dd><span class="pill pill-{{.Rock.Status}}">{{.Rock.Status}}</span></dd>
+  {{with .Rock.Dedication}}<dt>Dedication</dt><dd class="dedication">{{.}}</dd>{{end}}
+  {{with .Rock.Source}}<dt>Source</dt><dd class="muted small">{{.}}</dd>{{end}}
+</dl>
+
+{{if .Authed}}
+<section class="card">
+  <h2>Edit</h2>
+  <form method="post" action="/{{.Lake.Slug}}/rock/{{.Rock.ID}}/update" class="grid">
+    <label>Marker ID<input name="marker_id" value="{{.Rock.MarkerID}}" required maxlength="10"></label>
+    <label>Name<input name="nickname" value="{{.Rock.Nickname}}" maxlength="60"></label>
+    <label>Local name<input name="local_name" value="{{.Rock.LocalName}}" maxlength="60"></label>
+    <label>Latitude<input name="latitude" value="{{with .Rock.Latitude}}{{.}}{{end}}"></label>
+    <label>Longitude<input name="longitude" value="{{with .Rock.Longitude}}{{.}}{{end}}"></label>
+    <label>Radius (m)<input name="size_m" type="number" min="0" value="{{with .Rock.SizeM}}{{.}}{{end}}"></label>
+    <label>Depth (ft)<input name="depth_ft" type="number" step="0.1" value="{{with .Rock.DepthFt}}{{.}}{{end}}"></label>
+    <label>Status<input name="status" value="{{.Rock.Status}}"></label>
+    <label>Dedication (private)<input name="dedication" value="{{.Rock.Dedication}}" maxlength="120"></label>
+    <button type="submit">Save</button>
+  </form>
+  <form method="post" action="/{{.Lake.Slug}}/rock/{{.Rock.ID}}/delete"
+        onsubmit="return confirm('Delete {{.Rock.MarkerID}}? This cannot be undone.')">
+    <button class="danger">Delete this rock</button>
+  </form>
+</section>
+{{end}}
+
+<script>window.ROCKS = {{json .Rocks}};</script>
+<script defer src="/static/js/map.js?v={{.V}}"></script>
+{{template "foot" .}}

@@ -1,0 +1,9 @@
+.git
+.gitignore
+*.sqlite3
+*.private.json
+dedications*.json
+data/
+Dockerfile
+fly.toml
+README.md

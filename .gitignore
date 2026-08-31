@@ -1,0 +1,6 @@
+# Private data NEVER enters this public repo.
+*.private.json
+dedications*.json
+*.sqlite3
+data/
+rocks_src/
