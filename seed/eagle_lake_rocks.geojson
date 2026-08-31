@@ -18,7 +18,8 @@
       "Kris Thompson field survey 2026-08-31 (local names; 5 rocks new since the DB)"
     ],
     "warning": "These points mark BOAT HAZARDS. Positions are as-recorded by ELPOA volunteers, not a hydrographic survey. Do not navigate by them.",
-    "note": "Dedication/sponsor names are deliberately omitted from this public dataset."
+    "note": "Dedication/sponsor names are deliberately omitted from this public dataset.",
+    "note_axes": "status is the physical fact (marked = buoy on the water, candidate = unmarked rock, missing = marker lost). verified is independent evidence. A marked rock may be unverified and a candidate may be verified."
   },
   "features": [
     {
@@ -39,7 +40,9 @@
         "size_m": null,
         "depth_ft": null,
         "source": "ELPOA production database (rocks.opeongo.net), snapshot 2025-11-26",
-        "accuracy": "as-recorded"
+        "accuracy": "as-recorded",
+        "verified": true,
+        "hidden": false
       }
     },
     {
@@ -60,7 +63,9 @@
         "size_m": null,
         "depth_ft": null,
         "source": "ELPOA production database (rocks.opeongo.net), snapshot 2025-11-26",
-        "accuracy": "as-recorded"
+        "accuracy": "as-recorded",
+        "verified": true,
+        "hidden": false
       }
     },
     {
@@ -81,7 +86,9 @@
         "size_m": null,
         "depth_ft": null,
         "source": "ELPOA production database (rocks.opeongo.net), snapshot 2025-11-26",
-        "accuracy": "as-recorded"
+        "accuracy": "as-recorded",
+        "verified": true,
+        "hidden": false
       }
     },
     {
@@ -102,7 +109,9 @@
         "size_m": null,
         "depth_ft": null,
         "source": "ELPOA production database (rocks.opeongo.net), snapshot 2025-11-26",
-        "accuracy": "as-recorded"
+        "accuracy": "as-recorded",
+        "verified": true,
+        "hidden": false
       }
     },
     {
@@ -123,7 +132,9 @@
         "size_m": null,
         "depth_ft": null,
         "source": "ELPOA production database (rocks.opeongo.net), snapshot 2025-11-26",
-        "accuracy": "as-recorded"
+        "accuracy": "as-recorded",
+        "verified": true,
+        "hidden": false
       }
     },
     {
@@ -144,7 +155,9 @@
         "size_m": null,
         "depth_ft": null,
         "source": "ELPOA production database (rocks.opeongo.net), snapshot 2025-11-26",
-        "accuracy": "as-recorded"
+        "accuracy": "as-recorded",
+        "verified": true,
+        "hidden": false
       }
     },
     {
@@ -165,7 +178,9 @@
         "size_m": 30,
         "depth_ft": 0.5,
         "source": "ELPOA production database (rocks.opeongo.net), snapshot 2025-11-26; depth from 2025-04-05 dumpdata (column later dropped); local name from Kris field survey 2026-08-31 (agrees to 0 m)",
-        "accuracy": "as-recorded"
+        "accuracy": "as-recorded",
+        "verified": true,
+        "hidden": false
       }
     },
     {
@@ -186,7 +201,9 @@
         "size_m": 3,
         "depth_ft": 0.5,
         "source": "ELPOA production database (rocks.opeongo.net), snapshot 2025-11-26; depth from 2025-04-05 dumpdata (column later dropped); local name from Kris field survey 2026-08-31 (agrees to 0 m)",
-        "accuracy": "as-recorded"
+        "accuracy": "as-recorded",
+        "verified": true,
+        "hidden": false
       }
     },
     {
@@ -207,7 +224,9 @@
         "size_m": null,
         "depth_ft": 0.5,
         "source": "ELPOA production database (rocks.opeongo.net), snapshot 2025-11-26; depth from 2025-04-05 dumpdata (column later dropped); local name from Kris field survey 2026-08-31 (agrees to 0 m)",
-        "accuracy": "as-recorded"
+        "accuracy": "as-recorded",
+        "verified": true,
+        "hidden": false
       }
     },
     {
@@ -228,7 +247,9 @@
         "size_m": 10,
         "depth_ft": 0.5,
         "source": "ELPOA production database (rocks.opeongo.net), snapshot 2025-11-26; depth from 2025-04-05 dumpdata (column later dropped); local name from Kris field survey 2026-08-31 (agrees to 0 m)",
-        "accuracy": "as-recorded"
+        "accuracy": "as-recorded",
+        "verified": true,
+        "hidden": false
       }
     },
     {
@@ -249,7 +270,9 @@
         "size_m": null,
         "depth_ft": null,
         "source": "ELPOA production database (rocks.opeongo.net), snapshot 2025-11-26",
-        "accuracy": "as-recorded"
+        "accuracy": "as-recorded",
+        "verified": true,
+        "hidden": false
       }
     },
     {
@@ -270,7 +293,9 @@
         "size_m": null,
         "depth_ft": null,
         "source": "ELPOA production database (rocks.opeongo.net), snapshot 2025-11-26",
-        "accuracy": "as-recorded"
+        "accuracy": "as-recorded",
+        "verified": true,
+        "hidden": false
       }
     },
     {
@@ -291,7 +316,9 @@
         "size_m": null,
         "depth_ft": null,
         "source": "ELPOA production database (rocks.opeongo.net), snapshot 2025-11-26",
-        "accuracy": "as-recorded"
+        "accuracy": "as-recorded",
+        "verified": true,
+        "hidden": false
       }
     },
     {
@@ -308,11 +335,13 @@
         "nickname": null,
         "local_name": "North jug",
         "former_name": null,
-        "status": "unverified",
+        "status": "candidate",
         "size_m": null,
         "depth_ft": null,
         "source": "Kris field survey 2026-08-31; NOT in the production database (nearest known marker NE4, 41 m)",
-        "accuracy": "as-reported"
+        "accuracy": "as-reported",
+        "verified": false,
+        "hidden": false
       }
     },
     {
@@ -329,11 +358,13 @@
         "nickname": null,
         "local_name": "East dock",
         "former_name": null,
-        "status": "unverified",
+        "status": "candidate",
         "size_m": null,
         "depth_ft": null,
         "source": "Kris field survey 2026-08-31; NOT in the production database (nearest known marker C2, 1036 m)",
-        "accuracy": "as-reported"
+        "accuracy": "as-reported",
+        "verified": false,
+        "hidden": true
       }
     },
     {
@@ -350,11 +381,13 @@
         "nickname": null,
         "local_name": "West",
         "former_name": null,
-        "status": "unverified",
+        "status": "candidate",
         "size_m": null,
         "depth_ft": null,
         "source": "Kris field survey 2026-08-31; NOT in the production database (nearest known marker NW2, 605 m)",
-        "accuracy": "as-reported"
+        "accuracy": "as-reported",
+        "verified": false,
+        "hidden": false
       }
     },
     {
@@ -371,11 +404,13 @@
         "nickname": null,
         "local_name": "Dylan Rock",
         "former_name": null,
-        "status": "unverified",
+        "status": "candidate",
         "size_m": null,
         "depth_ft": 1.5,
         "source": "Kris field survey 2026-08-31; NOT in the production database (nearest known marker NW2, 618 m)",
-        "accuracy": "as-reported"
+        "accuracy": "as-reported",
+        "verified": false,
+        "hidden": false
       }
     },
     {
@@ -392,11 +427,13 @@
         "nickname": null,
         "local_name": "\"He\" [name truncated in source]",
         "former_name": null,
-        "status": "unverified",
+        "status": "candidate",
         "size_m": null,
         "depth_ft": null,
         "source": "Kris field survey 2026-08-31; NOT in the production database (nearest known marker NW2, 593 m)",
-        "accuracy": "as-reported"
+        "accuracy": "as-reported",
+        "verified": false,
+        "hidden": false
       }
     }
   ]

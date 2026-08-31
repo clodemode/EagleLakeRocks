@@ -164,7 +164,8 @@ func (a *App) rockList(w http.ResponseWriter, r *http.Request) {
 	if lake == nil {
 		return
 	}
-	rocks, err := a.store.RocksByLake(lake.ID)
+	authed := a.auth.IsAuthed(r)
+	rocks, err := a.store.RocksByLake(lake.ID, authed)
 	if err != nil {
 		http.Error(w, "database error", 500)
 		return
@@ -172,8 +173,17 @@ func (a *App) rockList(w http.ResponseWriter, r *http.Request) {
 	for i := range rocks {
 		rocks[i].URL = "/" + lake.Slug + "/rock/" + strconv.FormatInt(rocks[i].ID, 10) + "/"
 	}
+	var marked, candidates int
+	for _, rk := range rocks {
+		if rk.Status == "marked" {
+			marked++
+		} else {
+			candidates++
+		}
+	}
 	a.render(w, "rock_list.html", map[string]any{
-		"Title": lake.Name, "Lake": lake, "Rocks": rocks, "Authed": a.auth.IsAuthed(r)})
+		"Title": lake.Name, "Lake": lake, "Rocks": rocks, "Authed": authed,
+		"MarkedCount": marked, "CandidateCount": candidates})
 }
 
 func (a *App) rockDetail(w http.ResponseWriter, r *http.Request) {
@@ -188,6 +198,10 @@ func (a *App) rockDetail(w http.ResponseWriter, r *http.Request) {
 	}
 	rock, err := a.store.Rock(id)
 	if err != nil || rock.LakeID != lake.ID {
+		http.NotFound(w, r)
+		return
+	}
+	if rock.Hidden && !a.auth.IsAuthed(r) {
 		http.NotFound(w, r)
 		return
 	}
@@ -211,7 +225,7 @@ func (a *App) geoJSON(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	rocks, err := a.store.RocksByLake(lake.ID)
+	rocks, err := a.store.RocksByLake(lake.ID, false)
 	if err != nil {
 		http.Error(w, "database error", 500)
 		return
@@ -227,10 +241,15 @@ func (a *App) geoJSON(w http.ResponseWriter, r *http.Request) {
 		if rk.Latitude == nil || rk.Longitude == nil {
 			continue // a rock with no position is not a mappable hazard
 		}
+		// Two axes, stated plainly, so a consumer can filter on either.
+		// `marked` is whether a buoy is on the water; `verified` is whether
+		// anyone confirmed the rock. They are independent.
 		p := map[string]any{
 			"marker_id": rk.MarkerID,
 			"nickname":  rk.Nickname,
 			"status":    rk.Status,
+			"marked":    rk.Status == "marked",
+			"verified":  rk.Verified,
 		}
 		if rk.LocalName != "" && rk.LocalName != rk.Nickname {
 			p["local_name"] = rk.LocalName
@@ -282,7 +301,7 @@ func (a *App) exportCSV(w http.ResponseWriter, r *http.Request) {
 	if lake == nil {
 		return
 	}
-	rocks, err := a.store.RocksByLake(lake.ID)
+	rocks, err := a.store.RocksByLake(lake.ID, false)
 	if err != nil {
 		http.Error(w, "database error", 500)
 		return
@@ -292,7 +311,7 @@ func (a *App) exportCSV(w http.ResponseWriter, r *http.Request) {
 	cw := csv.NewWriter(w)
 	defer cw.Flush()
 	_ = cw.Write([]string{"marker_id", "nickname", "latitude", "longitude",
-		"size_m", "depth_ft", "status"})
+		"size_m", "depth_ft", "status", "verified"})
 	for _, rk := range rocks {
 		f := func(p *float64) string {
 			if p == nil {
@@ -305,7 +324,7 @@ func (a *App) exportCSV(w http.ResponseWriter, r *http.Request) {
 			size = strconv.Itoa(*rk.SizeM)
 		}
 		_ = cw.Write([]string{rk.MarkerID, rk.Nickname, f(rk.Latitude), f(rk.Longitude),
-			size, f(rk.DepthFt), rk.Status})
+			size, f(rk.DepthFt), rk.Status, strconv.FormatBool(rk.Verified)})
 	}
 }
 
@@ -371,6 +390,8 @@ func (a *App) rockFromForm(r *http.Request, rk *Rock) {
 	rk.SizeM = parseIntPtr(r.PostFormValue("size_m"))
 	rk.DepthFt = parseFloatPtr(r.PostFormValue("depth_ft"))
 	rk.Dedication = strings.TrimSpace(r.PostFormValue("dedication"))
+	rk.Hidden = r.PostFormValue("hidden") != ""
+	rk.Verified = r.PostFormValue("verified") != ""
 	if s := strings.TrimSpace(r.PostFormValue("status")); s != "" {
 		rk.Status = s
 	}

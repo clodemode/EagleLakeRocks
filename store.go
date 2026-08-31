@@ -35,7 +35,12 @@ type Rock struct {
 	Longitude  *float64 `json:"longitude"`
 	SizeM      *int     `json:"size,omitempty"`
 	DepthFt    *float64 `json:"depth_ft,omitempty"`
-	Status     string   `json:"status"`
+	Status     string   `json:"status"`   // marked | candidate | missing
+	Verified   bool     `json:"verified"` // independent of Status
+	// Hidden withholds a rock from the public map, table, GeoJSON and CSV. It
+	// is NOT a delete and NOT a status: the rock stays in the database and
+	// stays visible to signed-in editors, so it can always be brought back.
+	Hidden     bool     `json:"hidden"`
 	Dedication string   `json:"dedication,omitempty"`
 	Source     string   `json:"source,omitempty"`
 	URL        string   `json:"url,omitempty"`
@@ -57,9 +62,16 @@ CREATE TABLE IF NOT EXISTS rock (
   latitude   REAL, longitude REAL,
   size_m     INTEGER,
   depth_ft   REAL,
+  -- Two INDEPENDENT axes. status is the physical fact: is a buoy on the water
+  -- ('marked'), is it an unmarked rock we know of ('candidate'), or was a
+  -- marker lost ('missing'). verified is the evidence: has anyone confirmed it.
+  -- A marked rock can be unverified and a candidate can be verified; collapsing
+  -- these into one enum loses information the map needs to show.
   status     TEXT NOT NULL DEFAULT 'candidate',
+  verified   INTEGER NOT NULL DEFAULT 0,
   dedication TEXT NOT NULL DEFAULT '',
   source     TEXT NOT NULL DEFAULT '',
+  hidden     INTEGER NOT NULL DEFAULT 0,
   UNIQUE (lake_id, marker_id)
 );`
 
@@ -76,10 +88,62 @@ func OpenStore(path string) (*Store, error) {
 	if _, err := db.Exec(schema); err != nil {
 		return nil, fmt.Errorf("schema: %w", err)
 	}
-	return &Store{db: db}, nil
+	s := &Store{db: db}
+	if err := s.migrate(); err != nil {
+		return nil, fmt.Errorf("migrate: %w", err)
+	}
+	return s, nil
 }
 
 func (s *Store) Close() error { return s.db.Close() }
+
+// migrate adds columns to a database created by an earlier build. CREATE TABLE
+// IF NOT EXISTS is a no-op on an existing table, so a new column never appears
+// on a volume that already holds data without this.
+func (s *Store) migrate() error {
+	have := map[string]bool{}
+	rows, err := s.db.Query(`PRAGMA table_info(rock)`)
+	if err != nil {
+		return err
+	}
+	for rows.Next() {
+		var cid int
+		var name, ctype string
+		var notnull, pk int
+		var dflt any
+		if err := rows.Scan(&cid, &name, &ctype, &notnull, &dflt, &pk); err != nil {
+			rows.Close()
+			return err
+		}
+		have[name] = true
+	}
+	rows.Close()
+	if err := rows.Err(); err != nil {
+		return err
+	}
+	if !have["hidden"] {
+		if _, err := s.db.Exec(`ALTER TABLE rock ADD COLUMN hidden INTEGER NOT NULL DEFAULT 0`); err != nil {
+			return err
+		}
+	}
+	if !have["verified"] {
+		if _, err := s.db.Exec(`ALTER TABLE rock ADD COLUMN verified INTEGER NOT NULL DEFAULT 0`); err != nil {
+			return err
+		}
+		// Split the old single-axis status into (status, verified).
+		// 'marked' rows came from the ELPOA production database and carry grid
+		// marker IDs, so they are both marked and verified. 'unverified' rows
+		// are field reports with no buoy: unmarked candidates, unconfirmed.
+		if _, err := s.db.Exec(`UPDATE rock SET verified=1 WHERE status='marked'`); err != nil {
+			return err
+		}
+		if _, err := s.db.Exec(
+			`UPDATE rock SET status='candidate', verified=0 WHERE status='unverified'`); err != nil {
+			return err
+		}
+	}
+	return nil
+}
 
 func (s *Store) Lakes() ([]Lake, error) {
 	rows, err := s.db.Query(`SELECT id,name,slug,
@@ -113,17 +177,26 @@ func (s *Store) LakeBySlug(slug string) (*Lake, error) {
 }
 
 const rockCols = `id,lake_id,marker_id,nickname,local_name,latitude,longitude,
-                  size_m,depth_ft,status,dedication,source`
+                  size_m,depth_ft,status,verified,dedication,source,hidden`
 
 func scanRock(sc interface{ Scan(...any) error }) (Rock, error) {
 	var r Rock
 	err := sc.Scan(&r.ID, &r.LakeID, &r.MarkerID, &r.Nickname, &r.LocalName,
-		&r.Latitude, &r.Longitude, &r.SizeM, &r.DepthFt, &r.Status, &r.Dedication, &r.Source)
+		&r.Latitude, &r.Longitude, &r.SizeM, &r.DepthFt, &r.Status, &r.Verified,
+		&r.Dedication, &r.Source, &r.Hidden)
 	return r, err
 }
 
-func (s *Store) RocksByLake(lakeID int64) ([]Rock, error) {
-	rows, err := s.db.Query(`SELECT `+rockCols+` FROM rock WHERE lake_id=? ORDER BY marker_id`, lakeID)
+// RocksByLake returns a lake's rocks. includeHidden must be true ONLY for
+// signed-in editors — every public surface passes false. Candidates are NOT
+// filtered here: they are withheld at the display layer so the data stays whole
+// and a viewer can opt into seeing them.
+func (s *Store) RocksByLake(lakeID int64, includeHidden bool) ([]Rock, error) {
+	q := `SELECT ` + rockCols + ` FROM rock WHERE lake_id=?`
+	if !includeHidden {
+		q += ` AND hidden=0`
+	}
+	rows, err := s.db.Query(q+` ORDER BY marker_id`, lakeID)
 	if err != nil {
 		return nil, err
 	}
@@ -149,10 +222,11 @@ func (s *Store) Rock(id int64) (*Rock, error) {
 
 func (s *Store) CreateRock(r *Rock) error {
 	res, err := s.db.Exec(`INSERT INTO rock
-	  (lake_id,marker_id,nickname,local_name,latitude,longitude,size_m,depth_ft,status,dedication,source)
-	  VALUES (?,?,?,?,?,?,?,?,?,?,?)`,
+	  (lake_id,marker_id,nickname,local_name,latitude,longitude,size_m,depth_ft,
+	   status,verified,dedication,source,hidden)
+	  VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`,
 		r.LakeID, r.MarkerID, r.Nickname, r.LocalName, r.Latitude, r.Longitude,
-		r.SizeM, r.DepthFt, r.Status, r.Dedication, r.Source)
+		r.SizeM, r.DepthFt, r.Status, r.Verified, r.Dedication, r.Source, r.Hidden)
 	if err != nil {
 		return err
 	}
@@ -162,7 +236,7 @@ func (s *Store) CreateRock(r *Rock) error {
 
 func (s *Store) UpdateRock(r *Rock) error {
 	_, err := s.db.Exec(`UPDATE rock SET marker_id=?,nickname=?,local_name=?,latitude=?,
-	  longitude=?,size_m=?,depth_ft=?,status=?,dedication=?,source=? WHERE id=?`,
+	  longitude=?,size_m=?,depth_ft=?,status=?,dedication=?,source=?,hidden=? WHERE id=?`,
 		r.MarkerID, r.Nickname, r.LocalName, r.Latitude, r.Longitude,
 		r.SizeM, r.DepthFt, r.Status, r.Dedication, r.Source, r.ID)
 	return err
@@ -204,6 +278,8 @@ type seedFile struct {
 			Nickname   *string  `json:"nickname"`
 			LocalName  *string  `json:"local_name"`
 			Status     string   `json:"status"`
+			Verified   bool     `json:"verified"`
+			Hidden     bool     `json:"hidden"`
 			SizeM      *int     `json:"size_m"`
 			DepthFt    *float64 `json:"depth_ft"`
 			Dedication *string  `json:"dedication"`
@@ -261,6 +337,7 @@ func (s *Store) Seed(path string) error {
 		}
 		r := Rock{LakeID: lakeID, MarkerID: mid, Nickname: nick,
 			LocalName: deref(f.Properties.LocalName), Status: f.Properties.Status,
+			Verified: f.Properties.Verified, Hidden: f.Properties.Hidden,
 			SizeM: f.Properties.SizeM, DepthFt: f.Properties.DepthFt,
 			Dedication: deref(f.Properties.Dedication), Source: f.Properties.Source}
 		if len(f.Geometry.Coordinates) == 2 {

@@ -1,8 +1,11 @@
 {{template "head" .}}
 <section class="page-head">
-  <h1>{{.Lake.Name}}</h1>
-  <p class="muted">{{len .Rocks}} marked hazards. Click a marker for detail{{if .Authed}}; drag one to reposition it{{end}}.</p>
+  <h1 class="visually-hidden">{{.Lake.Name}}</h1>
+  <p class="muted">{{.MarkedCount}} marked hazards{{if .CandidateCount}},
+     {{.CandidateCount}} unmarked candidates{{end}}.
+     Click a marker for detail{{if .Authed}}; drag one to reposition it{{end}}.</p>
 </section>
+
 
 <div id="map"
      data-min-lat="{{.Lake.MinLat}}" data-max-lat="{{.Lake.MaxLat}}"
@@ -15,18 +18,23 @@
   <table id="rocks">
     <thead><tr>
       <th>Marker</th><th>Name</th><th>Latitude</th><th>Longitude</th>
-      <th>Radius&nbsp;(m)</th><th>Depth&nbsp;(ft)</th><th>Status</th>
+      <th>Radius&nbsp;(m)</th><th>Depth&nbsp;(ft)</th><th>Marked</th><th>Verified</th>
     </tr></thead>
     <tbody>
     {{range .Rocks}}
-      <tr data-id="{{.ID}}" data-marker="{{.MarkerID}}">
+      <tr data-id="{{.ID}}" data-marker="{{.MarkerID}}"
+          data-candidate="{{if eq .Status "marked"}}0{{else}}1{{end}}"
+          class="{{if .Hidden}}row-hidden{{end}}">
         <td><a href="{{.URL}}">{{.MarkerID}}</a></td>
         <td>{{if .LocalName}}{{.LocalName}}{{else}}{{.Nickname}}{{end}}</td>
         <td>{{coord .Latitude}}</td>
         <td>{{coord .Longitude}}</td>
         <td>{{with .SizeM}}{{.}}{{end}}</td>
         <td>{{with .DepthFt}}{{.}}{{end}}</td>
-        <td><span class="pill pill-{{.Status}}">{{.Status}}</span></td>
+        <td><span class="pill pill-{{.Status}}">{{.Status}}</span>{{if .Hidden}}
+            <span class="pill pill-hidden">hidden</span>{{end}}</td>
+        <td>{{if .Verified}}<span class="pill pill-verified">verified</span>
+            {{else}}<span class="pill pill-unverified">unverified</span>{{end}}</td>
       </tr>
     {{end}}
     </tbody>
@@ -44,10 +52,13 @@
     <label>Longitude<input name="longitude" id="f-lng" required></label>
     <label>Radius (m)<input name="size_m" type="number" min="0"></label>
     <label>Depth (ft)<input name="depth_ft" type="number" step="0.1"></label>
-    <label>Status<select name="status">
-      <option value="candidate">candidate</option><option value="marked">marked</option>
-      <option value="missing">missing</option><option value="unverified">unverified</option>
+    <label>Marked<select name="status">
+      <option value="candidate">candidate &mdash; unmarked rock</option>
+      <option value="marked">marked &mdash; buoy on the water</option>
+      <option value="missing">missing &mdash; marker lost</option>
     </select></label>
+    <label class="check"><input type="checkbox" name="verified" value="1"> Verified</label>
+    <label class="check"><input type="checkbox" name="hidden" value="1"> Hide from public</label>
     <label>Dedication (private)<input name="dedication" maxlength="120"></label>
     <button type="submit">Add rock</button>
   </form>

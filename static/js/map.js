@@ -40,8 +40,36 @@
   var sat = L.tileLayer(
     'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
     { attribution: '&copy; Esri', maxZoom: 19 });
-  L.control.layers({ 'Map': osm, 'Satellite': sat }).addTo(map);
+  /* Candidates live on their own overlay. Leaflet's layer control is the right
+     home for "what am I looking at" — it is where users already reach, it gives
+     the state a visible checkbox, and it keeps the data on the map rather than
+     stripping it out of the DOM. Marked hazards are on by default; candidates
+     (unmarked rocks) are not. */
+  var markedLayer = L.layerGroup().addTo(map);
+  var candidateLayer = L.layerGroup();          // deliberately NOT added
+
+  L.control.layers(
+    { 'Map': osm, 'Satellite': sat },
+    { 'Marked hazards': markedLayer, 'Unmarked candidates': candidateLayer },
+    { collapsed: false }
+  ).addTo(map);
   L.control.scale({ imperial: true, metric: true }).addTo(map);
+
+  // A key. Distinct markers without one is half a feature.
+  var legend = L.control({ position: 'bottomright' });
+  legend.onAdd = function () {
+    var d = L.DomUtil.create('div', 'map-legend');
+    d.innerHTML =
+      '<b>Shape</b>' +
+      '<span><i class="lg sh-marked vf-yes"></i>Marked \u2014 buoy on the water</span>' +
+      '<span><i class="lg sh-candidate vf-yes"></i>Candidate \u2014 unmarked rock</span>' +
+      '<b>Colour</b>' +
+      '<span><i class="lg sh-marked vf-yes"></i>Verified</span>' +
+      '<span><i class="lg sh-marked vf-no">?</i>Unverified</span>';
+    L.DomEvent.disableClickPropagation(d);
+    return d;
+  };
+  legend.addTo(map);
 
   var markers = {};
 
@@ -68,17 +96,36 @@
   rocks.forEach(function (r) {
     if (r.latitude == null || r.longitude == null) return;   // not a mappable hazard
 
+    /* Two independent axes, two independent visual channels.
+       SHAPE  = is a buoy on the water?   circle = marked, diamond = candidate.
+       COLOUR = has anyone confirmed it?  red = verified, amber = unverified.
+       A marked rock can be unverified and a candidate can be verified, so
+       neither channel may be derived from the other. Unverified also carries a
+       "?" so the distinction survives greyscale and colour-blindness. */
+    var marked = (r.status || 'candidate').toLowerCase() === 'marked';
+    var glyph = r.verified ? '' : '?';
+    var size = marked ? (glyph ? 17 : 13) : 15;
+
     var m = L.marker([r.latitude, r.longitude], {
-      icon: L.divIcon({ className: 'rock-marker', iconSize: [12, 12], iconAnchor: [6, 6], html: '<span></span>' }),
+      icon: L.divIcon({
+        className: 'rock-marker'
+          + (marked ? ' sh-marked' : ' sh-candidate')
+          + (r.verified ? ' vf-yes' : ' vf-no')
+          + (r.hidden ? ' is-hidden' : ''),
+        iconSize: [size, size], iconAnchor: [size / 2, size / 2],
+        html: '<span><i>' + glyph + '</i></span>'
+      }),
       draggable: editable,
       keyboard: false
-    }).addTo(map);
+    });
+    var layer = marked ? markedLayer : candidateLayer;
+    m.addTo(layer);
 
     var label = L.marker([r.latitude, r.longitude], {
       icon: L.divIcon({ className: 'marker-label', iconSize: null, iconAnchor: [-8, 8],
                         html: '<span>' + esc(r.marker_id) + '</span>' }),
       interactive: false
-    }).addTo(map);
+    }).addTo(layer);          // the label belongs to the marker's layer, not the map
 
     m.bindPopup(popupHTML(r));
     markers[r.marker_id] = { marker: m, label: label, rock: r };
@@ -133,7 +180,18 @@
     map.invalidateSize();
     var fit = clampMinZoom();
     if (userMoved) return;
-    if (el.dataset.focus === '1' && rocks.length === 1 && rocks[0].latitude != null) {
+    /* Keep the table in step with the overlay, so the list always describes
+     exactly what is drawn. */
+  function syncCandidateRows() {
+    var shown = map.hasLayer(candidateLayer);
+    document.querySelectorAll('#rocks tbody tr[data-candidate="1"]').forEach(function (row) {
+      row.hidden = !shown;
+    });
+  }
+  map.on('overlayadd overlayremove', syncCandidateRows);
+  syncCandidateRows();
+
+  if (el.dataset.focus === '1' && rocks.length === 1 && rocks[0].latitude != null) {
       map.setView([rocks[0].latitude, rocks[0].longitude], Math.max(fit, 16));
     } else {
       map.fitBounds(bounds, { padding: [30, 30] });
@@ -182,7 +240,9 @@
   if (filter) {
     filter.addEventListener('input', function () {
       var q = filter.value.trim().toLowerCase();
+      var showCand = map.hasLayer(candidateLayer);
       document.querySelectorAll('#rocks tbody tr').forEach(function (row) {
+        if (row.dataset.candidate === '1' && !showCand) { row.hidden = true; return; }
         row.hidden = q !== '' && row.textContent.toLowerCase().indexOf(q) === -1;
       });
     });

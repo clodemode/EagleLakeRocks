@@ -15,7 +15,10 @@
   <dt>Position</dt><dd>{{coord .Rock.Latitude}}, {{coord .Rock.Longitude}}</dd>
   {{with .Rock.SizeM}}<dt>Radius</dt><dd>{{.}} m</dd>{{end}}
   {{with .Rock.DepthFt}}<dt>Depth</dt><dd>{{.}} ft</dd>{{end}}
-  <dt>Status</dt><dd><span class="pill pill-{{.Rock.Status}}">{{.Rock.Status}}</span></dd>
+  <dt>Marked</dt><dd><span class="pill pill-{{.Rock.Status}}">{{.Rock.Status}}</span>
+      {{if .Rock.Hidden}} <span class="pill pill-hidden">hidden from public</span>{{end}}</dd>
+  <dt>Verified</dt><dd>{{if .Rock.Verified}}<span class="pill pill-verified">verified</span>
+      {{else}}<span class="pill pill-unverified">unverified</span>{{end}}</dd>
   {{with .Rock.Dedication}}<dt>Dedication</dt><dd class="dedication">{{.}}</dd>{{end}}
   {{with .Rock.Source}}<dt>Source</dt><dd class="muted small">{{.}}</dd>{{end}}
 </dl>
@@ -31,7 +34,15 @@
     <label>Longitude<input name="longitude" value="{{with .Rock.Longitude}}{{.}}{{end}}"></label>
     <label>Radius (m)<input name="size_m" type="number" min="0" value="{{with .Rock.SizeM}}{{.}}{{end}}"></label>
     <label>Depth (ft)<input name="depth_ft" type="number" step="0.1" value="{{with .Rock.DepthFt}}{{.}}{{end}}"></label>
-    <label>Status<input name="status" value="{{.Rock.Status}}"></label>
+    <label>Marked<select name="status">
+      <option value="marked"{{if eq .Rock.Status "marked"}} selected{{end}}>marked &mdash; buoy on the water</option>
+      <option value="candidate"{{if eq .Rock.Status "candidate"}} selected{{end}}>candidate &mdash; unmarked rock</option>
+      <option value="missing"{{if eq .Rock.Status "missing"}} selected{{end}}>missing &mdash; marker lost</option>
+    </select></label>
+    <label class="check"><input type="checkbox" name="verified" value="1"{{if .Rock.Verified}} checked{{end}}>
+      Verified</label>
+    <label class="check"><input type="checkbox" name="hidden" value="1"{{if .Rock.Hidden}} checked{{end}}>
+      Hide from the public map and dataset</label>
     <label>Dedication (private)<input name="dedication" value="{{.Rock.Dedication}}" maxlength="120"></label>
     <button type="submit">Save</button>
   </form>
